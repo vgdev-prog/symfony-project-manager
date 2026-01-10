@@ -40,15 +40,18 @@ class ConfirmTest extends TestCase
         $email = Email::fromString('test@app.test');
         $password = 'hash';
         $token = 'token';
-        $date = new DateTimeImmutable();
-        $status = UserStatus::WAIT;
 
-        return  User::signUpByEmail(
+        $user = new User(
             $id,
-            $date,
+            new DateTimeImmutable()
+        );
+
+        $user->signUpByEmail(
             $email,
             $password,
             $token
         );
+
+        return $user;
     }
 }

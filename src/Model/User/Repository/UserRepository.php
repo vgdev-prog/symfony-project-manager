@@ -71,6 +71,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->findOneBy(['token' => $token]);
     }
 
+    public function hasByNetworkIdentity(string $network, string $identity): bool
+    {
+        return $this->createQueryBuilder('user')
+            ->select('user.id')
+            ->innerJoin('user.network', 'network')
+            ->where('network.network = :network')
+            ->andWhere('network.identity = :identity')
+            ->setParameter('network', $network)
+            ->setParameter('identity', $identity)
+            ->getQuery()
+            ->getSingleScalarResult() > 0;
+    }
+
     public function hasByEmail(Email $email): bool
     {
         // TODO: Implement hasByEmail() method.

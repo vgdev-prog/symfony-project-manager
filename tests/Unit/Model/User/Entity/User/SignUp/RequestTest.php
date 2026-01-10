@@ -16,18 +16,22 @@ class RequestTest extends TestCase
     public function testSuccess(): void
     {
         $id = Id::next();
+        $date = new DateTimeImmutable();
         $email = Email::fromString('test@app.test');
         $password = 'hash';
         $token = 'token';
-        $date = new DateTimeImmutable();
 
-        $user = User::signUpByEmail(
-           $id,
-            $date,
+        $user = new User(
+            $id,
+            $date
+        );
+
+        $user->signUpByEmail(
             $email,
             $password,
             $token
         );
+
 
         $this->assertTrue($user->isWait());
         $this->assertFalse($user->isActive());

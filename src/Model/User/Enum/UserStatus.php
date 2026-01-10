@@ -9,4 +9,5 @@ enum UserStatus: string
     case ACTIVE = 'active';
     case WAIT = 'wait';
     case INACTIVE = 'inactive';
+    case NEW = 'new';
 }

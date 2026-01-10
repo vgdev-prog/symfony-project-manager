@@ -3,56 +3,92 @@
 namespace App\Model\User\Entity\User;
 
 
+use AllowDynamicProperties;
 use App\Model\User\Enum\UserStatus;
 use App\Model\User\ValueObject\Email;
 use App\Model\User\ValueObject\Id;
+use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use DomainException;
+use Exception;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 {
-    private Id $id;
-    private Email $email;
-    private string $password;
-    private ?string $confirmToken;
-    private DateTimeInterface $date;
-    private UserStatus $status = UserStatus::WAIT;
 
-    private function __construct(
-        Id $id,
-        \DateTimeImmutable $date,
+    private Email $email;
+    private ?string $password = null;
+    private ?string $confirmToken = null;
+    private Collection $networks;
+
+    public function __construct(
+        private Id                $id,
+        private DateTimeInterface $date,
+        private UserStatus        $status = UserStatus::NEW,
     )
     {
-        $this->id = $id;
-        $this->date = $date;
+        $this->networks = new ArrayCollection();
     }
 
-    public static function signUpByEmail(Id $id, \DateTimeImmutable $date, Email $email, string $hash, string $token): self
+    public function signUpByEmail(
+        Email  $email,
+        string $hash,
+        string $token
+    ): void
     {
-        $user = new self($id,$date);
-
-        $user->email = $email;
-        $user->password = $hash;
-        $user->confirmToken = $token;
-        $user->status = UserStatus::WAIT;
-        return $user;
+        $this->email = $email;
+        $this->password = $hash;
+        $this->confirmToken = $token;
+        $this->status = UserStatus::WAIT;
     }
 
-    public static function signUpByNetwork(
-        Id                 $id,
-        \DateTimeImmutable $date,
-        string             $network,
-        string             $identity,
-    ): self
+    /**
+     * @throws Exception
+     */
+    public function signUpByNetwork(
+        string $network,
+        string $identity,
+    ): void
     {
-        $user = new self();
+        if (!$this->isNew()) {
+            throw new DomainException('User is already signed up.');
+        }
+        $this->attachNetwork($network, $identity);
+        $this->status = UserStatus::ACTIVE;
+    }
 
-        $user->network = $network;
-        $user->identity = $identity;
+    /**
+     * @throws Exception
+     */
+    private function attachNetwork(string $network, string $identity): void
+    {
+        /**
+         * @var Network $existingNetwork
+         */
+        foreach ($this->networks as $existingNetwork) {
+            if ($existingNetwork->isForNetwork($network)) {
+                throw new DomainException('Network is already attached.');
+            }
+        }
 
-        return $user;
+        $this->networks->add(Network::fromNetwork($this, $network, $identity));
+    }
+
+    /**
+     * @return Network[]
+     */
+    public function getNetworks(): array
+    {
+        return $this->networks->toArray();
+    }
+
+    private function isNew(): bool
+    {
+        return $this->status === UserStatus::NEW;
     }
 
 
@@ -99,7 +135,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function confirmSignUp(): void
     {
         if ($this->isActive()) {
-            throw new \DomainException("User already confirmed.");
+            throw new DomainException("User already confirmed.");
         }
         $this->status = UserStatus::ACTIVE;
         $this->setConfirmToken(null);

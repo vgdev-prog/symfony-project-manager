@@ -15,4 +15,6 @@ interface UserRepositoryInterface
 
     public function hasByEmail(Email $email): bool;
 
+    public function hasByNetworkIdentity(): bool;
+
 }
