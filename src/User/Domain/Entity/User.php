@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\User\Domain\Entity;
 
 
@@ -7,7 +9,6 @@ use App\Shared\Domain\ValueObject\Email;
 use App\Shared\Domain\ValueObject\Id;
 use App\User\Domain\Enum\UserStatus;
 use App\User\Domain\ValueObject\ResetToken;
-use App\User\Infrastructure\Repository\UserRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -20,7 +21,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'user_users')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+final class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 {
     private function __construct(

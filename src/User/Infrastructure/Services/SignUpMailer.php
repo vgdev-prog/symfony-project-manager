@@ -16,8 +16,10 @@ readonly class SignUpMailer implements UserMailerInterface
     public function __construct(
         private MailerInterface       $mailer,
         private UrlGeneratorInterface $urlGenerator,
-        private string $senderMail,
-    ) {}
+        private string                $senderMail,
+    )
+    {
+    }
 
     /**
      * @throws TransportExceptionInterface
@@ -34,7 +36,10 @@ readonly class SignUpMailer implements UserMailerInterface
             ->from($this->senderMail)
             ->to($email->getValue())
             ->subject('Подтверждение регистрации')
-            ->htmlTemplate('@User/email/signup_confirmation.html.twig');
+            ->htmlTemplate('@User/email/signup_confirmation.html.twig')
+            ->context([
+                'confirmUrl' => $confirmUrl
+            ]);
 
         $this->mailer->send($message);
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Shared\Infrastructure\Persistance;
+namespace App\Shared\Infrastructure\Persistence;
 
 use App\Shared\Domain\Contract\FlusherInterface;
 use Doctrine\ORM\EntityManagerInterface;

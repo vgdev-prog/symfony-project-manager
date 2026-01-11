@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping\Embeddable;
 use DomainException;
 
 #[Embeddable]
-class ResetToken
+final class ResetToken
 {
     public function __construct(
         #[ORM\Column(type: 'string', length: 255)]

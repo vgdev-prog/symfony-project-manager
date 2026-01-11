@@ -6,7 +6,7 @@ namespace App\User\Domain\ValueObject;
 
 use App\User\Domain\Enum\UserRole;
 
-class Role
+final class Role
 {
     public function __construct(
         private string $name

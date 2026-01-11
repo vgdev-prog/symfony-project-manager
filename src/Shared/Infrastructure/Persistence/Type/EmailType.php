@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Shared\Infrastructure\Persistance\Type;
+namespace App\Shared\Infrastructure\Persistence\Type;
 
 use App\Shared\Domain\ValueObject\Email;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\StringType;
 
-class EmailType extends StringType
+final class EmailType extends StringType
 {
     public const NAME = 'email';
 

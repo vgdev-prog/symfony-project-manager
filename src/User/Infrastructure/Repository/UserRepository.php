@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\User\Infrastructure\Repository;
 
 use App\Shared\Domain\ValueObject\Email;
@@ -14,7 +16,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserRepositoryInterface
+final class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserRepositoryInterface
 {
     public function __construct(
         ManagerRegistry $registry,
@@ -67,14 +69,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function findByConfirmToken(string $token): ?User
     {
-        return $this->findOneBy(['token' => $token]);
+        return $this->findOneBy(['confirmToken' => $token]);
     }
 
     public function hasByNetworkIdentity(string $network, string $identity): bool
     {
         return $this->createQueryBuilder('user')
             ->select('user.id')
-            ->innerJoin('user.network', 'network')
+            ->innerJoin('user.networks', 'network')
             ->where('network.network = :network')
             ->andWhere('network.identity = :identity')
             ->setParameter('network', $network)

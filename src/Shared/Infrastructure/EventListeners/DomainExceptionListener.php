@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 final readonly class DomainExceptionListener
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private LoggerInterface $logger,
         private bool                     $isDebug = false,
     )
     {
@@ -43,7 +43,7 @@ final readonly class DomainExceptionListener
     public function buildErrorData(AbstractDomainException $exception): array
     {
         $errorData = [
-            'code' => $exception->getDomainErrorCode(),
+            'code' => $exception::getDomainErrorCode(),
             'message' => $exception->getMessage(),
         ];
 
@@ -68,33 +68,33 @@ final readonly class DomainExceptionListener
     {
         $context = [
             'exception' => $exception,
-            'code' => $exception->getDomainErrorCode(),
+            'code' => $exception::getDomainErrorCode(),
             'publicContext' => $exception->getPublicContext(),
         ];
 
-        // Client errors (4xx) - log as warning
         if ($statusCode >= 400 && $statusCode < 500) {
             $this->logger->error(
                 message: 'Domain exception: {message}',
-                context: array_merge(['message' => $exception->getMessage()], $context)
+                context: array_merge(['message' => $exception->getMessage(), ...$context])
             );
         }
     }
 
     private function getTraceAsString(\Throwable $exception): array
     {
-        $trace = [];
-        foreach ($exception->getTrace() as $index => $frame) {
-            $trace[] = sprintf(
+        return array_map(
+            static fn(int $i, array $frame): string => sprintf(
                 '#%d %s(%d): %s%s%s()',
-                $index,
+                $i,
                 $frame['file'] ?? '[internal]',
                 $frame['line'] ?? 0,
                 $frame['class'] ?? '',
                 $frame['type'] ?? '',
-                $frame['function'] ?? ''
-            );
-        }
-        return $trace;
+                $frame['function'] ?? '',
+            ),
+            array_keys($exception->getTrace()),
+            $exception->getTrace(),
+        );
+
     }
 }

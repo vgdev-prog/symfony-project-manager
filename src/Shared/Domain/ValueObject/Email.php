@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Domain\ValueObject;
 
+use App\Shared\Domain\Exception\InvalidEmailException;
 use InvalidArgumentException;
 
 /**
@@ -18,9 +19,7 @@ final readonly class Email
     private function __construct(string $email)
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidArgumentException(
-                sprintf('Invalid email address: "%s"', $email)
-            );
+            throw new InvalidEmailException($email);
         }
 
         $this->value = mb_strtolower($email);

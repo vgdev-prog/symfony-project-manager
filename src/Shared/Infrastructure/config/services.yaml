@@ -27,7 +27,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, priority: 10 }
 
-    App\Shared\Domain\Contracts\FlusherInterface:
+    App\Shared\Domain\Contract\FlusherInterface:
         alias: App\Shared\Infrastructure\Persistence\DoctrineFlusher
 
     # Domain Event Dispatcher

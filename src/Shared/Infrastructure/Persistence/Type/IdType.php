@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Shared\Infrastructure\Persistance\Type;
+namespace App\Shared\Infrastructure\Persistence\Type;
 
-use App\Shared\Domain\ValueObject\Email;
 use App\Shared\Domain\ValueObject\Id;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\StringType;
+use InvalidArgumentException;
 
-class IdType extends StringType
+final class IdType extends StringType
 {
-    public const NAME = 'id';
+    public const NAME = 'uuid';
 
     public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?Id
     {
@@ -24,13 +24,20 @@ class IdType extends StringType
     {
         if ($value === null) return null;
 
-        if ($value instanceof Email) {
+        if ($value instanceof Id) {
             return $value->getValue();
         }
-        return $value;
+        if (is_string($value)) {
+            return $value;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf('Expected Id or string, got %s', get_debug_type($value))
+        );
+
     }
 
-    public function getName():string
+    public function getName(): string
     {
         return self::NAME;
     }

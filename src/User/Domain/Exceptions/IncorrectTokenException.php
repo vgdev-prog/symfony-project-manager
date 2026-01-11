@@ -7,7 +7,7 @@ namespace App\User\Domain\Exceptions;
 use App\Shared\Domain\Exception\AbstractDomainException;
 use DomainException;
 
-class IncorrectTokenException extends AbstractDomainException
+final class IncorrectTokenException extends AbstractDomainException
 {
     public function __construct(string $message = 'Incorrect confirmed token')
     {
@@ -15,7 +15,7 @@ class IncorrectTokenException extends AbstractDomainException
     }
 
 
-    public function getDomainErrorCode(): string
+    public static function getDomainErrorCode(): string
     {
         return ErrorCode::USER_INCORRECT_TOKEN->value;
     }

@@ -26,7 +26,7 @@ abstract class AbstractDomainException extends DomainException
     /**
      * Returns unique error code for API clients.
      */
-    abstract public function getDomainErrorCode(): string;
+    abstract public static function getDomainErrorCode(): string;
 
     /**
      * Returns public context safe to expose in API responses.
@@ -35,6 +35,11 @@ abstract class AbstractDomainException extends DomainException
      * By default, returns empty array (no context exposed).
      */
     public function getPublicContext(): array
+    {
+        return [];
+    }
+
+    public static function getExamplePublicContext():array
     {
         return [];
     }

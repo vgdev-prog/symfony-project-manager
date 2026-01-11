@@ -1,5 +1,5 @@
 doctrine:
     dbal:
         types:
-            email: App\Shared\Infrastructure\Persistance\Type\EmailType
-            id: App\Shared\Infrastructure\Persistance\Type\IdType
+            email: App\Shared\Infrastructure\Persistence\Type\EmailType
+            id: App\Shared\Infrastructure\Persistence\Type\IdType

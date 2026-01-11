@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace App\User\Application\UseCase\Reset\Request;
 
-use App\Model\Shared\Domain\Contracts\FlasherInterface;
+use App\Shared\Domain\Contract\FlusherInterface;
+use App\Shared\Domain\Contract\TokenGeneratorInterface;
+use App\Shared\Domain\ValueObject\Email;
 use App\User\Domain\Contract\ResetTokenSenderInterface;
 use App\User\Domain\Contract\UserRepositoryInterface;
-use App\User\Domain\ValueObject\Email;
-use App\User\Infrastructure\Services\ResetTokenizer;
-
 class Handler
 {
     public function __construct(
         private UserRepositoryInterface $users,
-        private ResetTokenizer $tokenGenerator,
-        private FlasherInterface $flasher,
+        private TokenGeneratorInterface $tokenGenerator,
+        private FlusherInterface $flusher,
         private ResetTokenSenderInterface $resetTokenSender,
     )
     {
@@ -34,7 +33,7 @@ class Handler
             new \DateTimeImmutable()
         );
 
-        $this->flasher->flush();
+        $this->flusher->flush();
         $this->resetTokenSender->send();
     }
 

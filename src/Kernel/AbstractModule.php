@@ -42,7 +42,7 @@ abstract class AbstractModule implements ModuleInterface
      */
     protected function getConfigPath(): string
     {
-        return $this->getPath() . '/Infrastructure/сonfig';
+        return $this->getPath() . '/Infrastructure/config';
     }
 
     /**
@@ -97,23 +97,6 @@ abstract class AbstractModule implements ModuleInterface
         return [
             'routes.yaml',  // Default: load routes.yaml if exists
         ];
-    }
-
-    /**
-     * Configure container from config files.
-     *
-     * This method is NOT used anymore!
-     * Kernel loads config files directly using getConfigFiles().
-     *
-     * Keep for backward compatibility.
-     */
-    public function configureContainer(
-        ContainerConfigurator $container,
-        \Symfony\Component\DependencyInjection\ContainerBuilder $builder
-    ): void
-    {
-        // Not used - Kernel loads files directly
-        // This is here only for interface compatibility
     }
 
     /**

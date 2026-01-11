@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Domain\ValueObject;
 
+use App\Shared\Domain\Exception\InvalidUuidException;
 use Ramsey\Uuid\Uuid;
 
 readonly class Id
@@ -12,6 +13,9 @@ readonly class Id
         private string $id
     )
     {
+        if (!Uuid::isValid($this->id)) {
+            throw new InvalidUuidException($id);
+        }
     }
 
     public static function next(): Id
@@ -24,8 +28,17 @@ readonly class Id
         return $this->id;
     }
 
-    public function fromString(): Id
+    public static function fromString(string $value): Id
     {
-        return new self($this->id);
+        return new self($value);
+    }
+    public function equals(self $other): bool
+    {
+        return $this->id === $other->id;
+    }
+
+    public function __toString(): string
+    {
+     return $this->id;
     }
 }

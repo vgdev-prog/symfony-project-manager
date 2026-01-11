@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users_user_networks')]
-class Network
+final class Network
 {
 
     /**
@@ -26,10 +26,10 @@ class Network
         private User  $user,
 
         #[ORM\Column(type: 'string', length: 255)]
-        public string $network,
+        private string $network,
 
         #[ORM\Column(type: 'string', length: 255)]
-        public string $identity
+        private string $identity
     )
     {
         if (!$this->network) {
