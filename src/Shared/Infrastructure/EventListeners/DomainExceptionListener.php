@@ -73,7 +73,7 @@ final readonly class DomainExceptionListener
         ];
 
         if ($statusCode >= 400 && $statusCode < 500) {
-            $this->logger->error(
+            $this->logger->warning(
                 message: 'Domain exception: {message}',
                 context: array_merge(['message' => $exception->getMessage(), ...$context])
             );

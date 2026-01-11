@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\User\Domain\Entity;
 
 use App\Shared\Domain\ValueObject\Id;
-use Exception;
+use App\User\Domain\Exceptions\RequiredNetworkIdentityException;
+use App\User\Domain\Exceptions\RequiredNetworkNameException;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -14,7 +15,7 @@ final class Network
 {
 
     /**
-     * @throws Exception
+     * @throws RequiredNetworkIdentityException|RequiredNetworkNameException
      */
     private function __construct(
         #[ORM\Id]
@@ -33,10 +34,10 @@ final class Network
     )
     {
         if (!$this->network) {
-            throw new Exception('Network name is required.');
+            throw new RequiredNetworkNameException();
         }
         if (!$this->identity) {
-            throw new Exception('Network identity is required.');
+            throw new RequiredNetworkIdentityException();
         }
     }
 
@@ -53,9 +54,6 @@ final class Network
         return $this->user;
     }
 
-    /**
-     * @throws Exception
-     */
     public static function fromNetwork(User $user, string $network, string $identity): self
     {
         return new self(

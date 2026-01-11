@@ -22,4 +22,11 @@ final class InvalidUuidException extends AbstractDomainException
             'uuid' => $this->value,
         ];
     }
+
+    public static function getExamplePublicContext(): array
+    {
+        return [
+            'uuid' => '550e8400-e29b-41d4-a716-446655440000'
+        ];
+    }
 }

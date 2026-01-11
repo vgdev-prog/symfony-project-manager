@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\User\Domain\Entity;
 
-
+use App\Shared\Domain\AggregateRoot;
 use App\Shared\Domain\ValueObject\Email;
 use App\Shared\Domain\ValueObject\Id;
+use App\User\Domain\Enum\UserRole;
 use App\User\Domain\Enum\UserStatus;
+use App\User\Domain\Event\UserSignedUpByEmail;
+use App\User\Domain\Event\UserSignedUpByNetwork;
+use App\User\Domain\Exceptions\NetworkAlreadyAttached;
 use App\User\Domain\ValueObject\ResetToken;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -21,7 +25,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'user_users')]
-final class User implements UserInterface, PasswordAuthenticatedUserInterface
+final class User extends AggregateRoot implements UserInterface, PasswordAuthenticatedUserInterface
 
 {
     private function __construct(
@@ -47,7 +51,7 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
         #[ORM\Embedded(class: ResetToken::class, columnPrefix: 'reset_token')]
         private ?ResetToken       $resetToken,
 
-        #[ORM\OneToMany(targetEntity: Network::class ,mappedBy: 'user',cascade: ['persist'], orphanRemoval: true)]
+        #[ORM\OneToMany(targetEntity: Network::class, mappedBy: 'user', cascade: ['persist'], orphanRemoval: true)]
         private Collection        $networks = new ArrayCollection()
     )
     {
@@ -92,7 +96,7 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return [];
+        return [UserRole::ROLE_USER->value];
     }
 
     public function getDate(): DateTimeInterface
@@ -111,9 +115,9 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
         DateTimeImmutable $date,
         Email             $email,
         string            $hash,
-        UserStatus        $userStatus,
         string            $token,
-        ResetToken        $resetToken
+        UserStatus        $userStatus = UserStatus::NEW,
+        ?ResetToken       $resetToken = null
     ): self
     {
         $user = new self(
@@ -129,6 +133,12 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$user->isNew()) {
             throw new DomainException('User is already signed up.');
         }
+        $event = new UserSignedUpByEmail(
+            $user->getId()->getValue(),
+            $user->getEmail()->getValue()
+        );
+
+        $user->recordEvent($event);
 
         return $user;
     }
@@ -158,14 +168,24 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$user->isNew()) {
             throw new DomainException('User is already signed up.');
         }
+
+        $event = new UserSignedUpByNetwork(
+            $id->getValue(),
+            $network,
+            $identity,
+            $email?->getValue(),
+        );
+
         $user->attachNetwork($network, $identity);
         $user->userStatus = UserStatus::ACTIVE;
+
+        $user->recordEvent($event);
 
         return $user;
     }
 
     /**
-     * @throws Exception
+     * @throws NetworkAlreadyAttached
      */
     private function attachNetwork(string $network, string $identity): void
     {
@@ -174,7 +194,7 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
          */
         foreach ($this->networks as $existingNetwork) {
             if ($existingNetwork->isForNetwork($network)) {
-                throw new DomainException('Network is already attached.');
+                throw new NetworkAlreadyAttached($network);
             }
         }
 

@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 final class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserRepositoryInterface
 {
     public function __construct(
-        ManagerRegistry $registry,
+        ManagerRegistry                $registry,
         private EntityManagerInterface $entityManager,
     )
     {
@@ -74,16 +74,19 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
 
     public function hasByNetworkIdentity(string $network, string $identity): bool
     {
-        return $this->createQueryBuilder('user')
-            ->select('user.id')
+        $count = $this->createQueryBuilder('user')
+            ->select('COUNT(user.id)')
             ->innerJoin('user.networks', 'network')
             ->where('network.network = :network')
             ->andWhere('network.identity = :identity')
             ->setParameter('network', $network)
             ->setParameter('identity', $identity)
             ->getQuery()
-            ->getSingleScalarResult() > 0;
+            ->getSingleScalarResult();
+
+        return $count > 0;
     }
+
     public function getByEmail(Email $email): ?User
     {
         return $this->findOneBy(['email' => $email]);

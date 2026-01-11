@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Domain;
 
-use App\Shared\Domain\Event\DomainEvent;
+use App\Shared\Domain\Contract\DomainEvent;
 
 /**
  * Base class for all Aggregate Roots in the domain.

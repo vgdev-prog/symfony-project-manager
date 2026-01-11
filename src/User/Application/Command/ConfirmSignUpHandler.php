@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\User\Application\UseCase\SignUp\Confirm;
+namespace App\User\Application\Command;
 
-use App\Model\Shared\Domain\Contracts\FlasherInterface;
 use App\Shared\Domain\Contract\FlusherInterface;
+use App\User\Application\Command\Input\ConfirmSignUpCommand;
 use App\User\Domain\Contract\UserRepositoryInterface;
 use App\User\Domain\Exceptions\IncorrectTokenException;
-use DomainException;
 
-readonly class Handler
+readonly class ConfirmSignUpHandler
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
@@ -19,7 +18,7 @@ readonly class Handler
     {
     }
 
-    public function handle(Command $command): void
+    public function handle(ConfirmSignUpCommand $command): void
     {
 
         if (!$user = $this->userRepository->findByConfirmToken($command->token)) {

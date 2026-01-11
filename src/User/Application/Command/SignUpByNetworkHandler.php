@@ -2,21 +2,24 @@
 
 declare(strict_types=1);
 
-namespace App\User\Application\UseCase\Network\Auth;
+namespace App\User\Application\Command;
 
-use App\Model\Shared\Domain\Contracts\FlasherInterface;
+use App\Shared\Domain\Contract\DomainEventDispatcherInterface;
+use App\Shared\Domain\Contract\FlusherInterface;
 use App\Shared\Domain\ValueObject\Id;
+use App\User\Application\Command\Input\SignUpByNetworkCommand;
 use App\User\Domain\Contract\UserRepositoryInterface;
 use App\User\Domain\Entity\User;
 use DateTimeImmutable;
 use DomainException;
 use Exception;
 
-class Handler
+readonly class SignUpByNetworkHandler
 {
     public function __construct(
-        private FlasherInterface        $flasher,
+        private FlusherInterface $flusher,
         private UserRepositoryInterface $userRepository,
+        private DomainEventDispatcherInterface $domainEventDispatcher
     )
     {
     }
@@ -24,7 +27,7 @@ class Handler
     /**
      * @throws Exception
      */
-    public function handle(Command $command): void
+    public function handle(SignUpByNetworkCommand $command): void
     {
         if ($this->userRepository->hasByNetworkIdentity($command->network, $command->identity)) {
             throw new DomainException('User already exists.');
@@ -39,6 +42,8 @@ class Handler
 
         $this->userRepository->add($user);
 
-        $this->flasher->flush();
+        $this->flusher->flush();
+
+        $this->domainEventDispatcher->dispatch($user);
     }
 }

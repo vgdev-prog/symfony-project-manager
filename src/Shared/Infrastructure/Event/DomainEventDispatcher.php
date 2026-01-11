@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Shared\Infrastructure\Event;
 
 use App\Shared\Domain\AggregateRoot;
-use App\Shared\Domain\Event\DomainEventDispatcherInterface;
+use App\Shared\Domain\Contract\DomainEventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

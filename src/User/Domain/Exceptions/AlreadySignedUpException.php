@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\User\Domain\Exceptions;
 
 use App\Shared\Domain\Exception\AbstractDomainException;
-use DomainException;
 
 final class AlreadySignedUpException extends AbstractDomainException
 {

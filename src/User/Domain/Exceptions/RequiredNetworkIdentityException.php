@@ -6,16 +6,15 @@ namespace App\User\Domain\Exceptions;
 
 use App\Shared\Domain\Exception\AbstractDomainException;
 
-final class IncorrectTokenException extends AbstractDomainException
+final class RequiredNetworkIdentityException extends AbstractDomainException
 {
-    public function __construct(string $message = 'Incorrect confirmed token')
+    public function __construct(string $message = 'Required network identity name is missing')
     {
         parent::__construct($message);
     }
 
-
     public static function getDomainErrorCode(): string
     {
-        return ErrorCode::USER_INCORRECT_TOKEN->value;
+        return ErrorCode::MISSING_REQUIRED_NETWORK_IDENTITY->value;
     }
 }

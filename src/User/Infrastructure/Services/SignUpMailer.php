@@ -43,4 +43,9 @@ readonly class SignUpMailer implements UserMailerInterface
 
         $this->mailer->send($message);
     }
+
+    public function resetToken(Email $email):void
+    {
+
+    }
 }

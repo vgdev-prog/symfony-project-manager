@@ -27,6 +27,9 @@ services:
         arguments:
             $senderMail: '%env(MAILER_SENDER)'
 
+    App\User\Domain\Contract\ResetTokenizerInterface:
+        alias: App\User\Infrastructure\Services\ResetTokenizer
+
 
     # Reset token interval
     user.reset_token.interval:
@@ -38,9 +41,6 @@ services:
         class: DateInterval
         arguments: ['%user.confirm_token_ttl%']
 
-
-
-    # ResetTokenizer service (if it exists)
-    # App\User\Services\ResetTokenizer:
-    #     arguments:
-    #         $interval: '@user.reset_token.interval'
+    App\User\Infrastructure\Services\ResetTokenizer:
+        arguments:
+            $interval: '@user.reset_token.interval'

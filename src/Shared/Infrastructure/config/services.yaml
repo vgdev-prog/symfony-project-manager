@@ -31,5 +31,5 @@ services:
         alias: App\Shared\Infrastructure\Persistence\DoctrineFlusher
 
     # Domain Event Dispatcher
-    App\Shared\Domain\Event\DomainEventDispatcherInterface:
+    App\Shared\Domain\Contract\DomainEventDispatcherInterface:
         alias: App\Shared\Infrastructure\Event\DomainEventDispatcher

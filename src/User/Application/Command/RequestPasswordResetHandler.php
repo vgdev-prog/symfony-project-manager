@@ -2,25 +2,28 @@
 
 declare(strict_types=1);
 
-namespace App\User\Application\UseCase\Reset\Request;
+namespace App\User\Application\Command;
 
 use App\Shared\Domain\Contract\FlusherInterface;
-use App\Shared\Domain\Contract\TokenGeneratorInterface;
 use App\Shared\Domain\ValueObject\Email;
-use App\User\Domain\Contract\ResetTokenSenderInterface;
+use App\User\Application\Command\Input\RequestPasswordResetCommand;
+use App\User\Domain\Contract\ResetTokenizerInterface;
+use App\User\Domain\Contract\UserMailerInterface;
 use App\User\Domain\Contract\UserRepositoryInterface;
-class Handler
+use DateTimeImmutable;
+
+readonly class RequestPasswordResetHandler
 {
     public function __construct(
         private UserRepositoryInterface $users,
-        private TokenGeneratorInterface $tokenGenerator,
+        private ResetTokenizerInterface $tokenGenerator,
         private FlusherInterface $flusher,
-        private ResetTokenSenderInterface $resetTokenSender,
+        private UserMailerInterface $mailer,
     )
     {
     }
 
-    public function handle(Command $command): void
+    public function handle(RequestPasswordResetCommand $command): void
     {
         $user = $this->users->getByEmail(Email::fromString($command->email));
 
@@ -29,12 +32,11 @@ class Handler
         }
 
         $user->requestPasswordReset(
-           $this->tokenGenerator->generate(),
-            new \DateTimeImmutable()
+            $this->tokenGenerator->generate(new DateTimeImmutable()),
+            new DateTimeImmutable()
         );
 
         $this->flusher->flush();
-        $this->resetTokenSender->send();
     }
 
 }
