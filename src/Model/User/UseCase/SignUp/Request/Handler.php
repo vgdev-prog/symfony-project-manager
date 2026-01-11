@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\SignUp\Request;
 
-use App\Model\User\Contracts\FlasherInterface;
+use App\Model\Shared\Domain\Contracts\FlasherInterface;
+use App\Model\Shared\Domain\Contracts\TokenGeneratorInterface;
+use App\Model\Shared\Domain\ValueObject\Id;
 use App\Model\User\Contracts\PasswordHasherInterface;
 use App\Model\User\Contracts\SignUpConfirmEmailSenderInterface;
-use App\Model\User\Contracts\TokenGeneratorInterface;
 use App\Model\User\Contracts\UserRepositoryInterface;
 use App\Model\User\Entity\User\User;
-use App\Model\User\Enum\UserStatus;
 use App\Model\User\ValueObject\Email;
-use App\Model\User\ValueObject\Id;
 use DateTimeImmutable;
 use DomainException;
 
@@ -35,16 +34,19 @@ readonly class Handler
         if ($this->userRepository->findOneBy(['email' => $mail])) {
             throw new DomainException('Email already exists');
         }
+
         $token = $this->tokenGenerator->generate();
 
-        $user = User::signUpByEmail(
-            Id::next(),
-            new DateTimeImmutable(),
-            Email::fromString($command->email),
-            $this->hasher->hash($command->password),
-            $token,
-        );
-        $token = $this->tokenGenerator->generate();
+       $user = new User(
+           Id::next(),
+           new DateTimeImmutable()
+       );
+       $user->signUpByEmail(
+           $mail,
+           $this->hasher->hash($command->password),
+           $token
+       );
+
         $this->userRepository->add($user);
         $this->flasher->flush();
         $this->sender->send($user->getEmail(), $token);

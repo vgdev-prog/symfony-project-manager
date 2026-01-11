@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model\User\Contracts;
+namespace App\Model\Shared\Domain\Contracts;
 
-interface FlasherInterface
+interface FlusherInterface
 {
     public function flush():void;
 }

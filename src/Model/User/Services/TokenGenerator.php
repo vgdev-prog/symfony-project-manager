@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\User\Services;
 
-use App\Model\User\Contracts\TokenGeneratorInterface;
+use App\Model\Shared\Domain\Contracts\TokenGeneratorInterface;
 use Random\RandomException;
 
 class TokenGenerator implements TokenGeneratorInterface

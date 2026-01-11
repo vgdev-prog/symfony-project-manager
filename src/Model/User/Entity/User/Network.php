@@ -4,23 +4,22 @@ declare(strict_types=1);
 
 namespace App\Model\User\Entity\User;
 
-use App\Model\User\ValueObject\Id;
+use App\Model\Shared\Domain\ValueObject\Id;
 use Exception;
 
-final readonly class Network
+final class Network
 {
     /**
      * @throws Exception
      */
-    private Id $id;
 
     private function __construct(
+        private Id $id,
         private User  $user,
         public string $network,
         public string $identity
     )
     {
-        $this->id = Id::next();
         if (!$this->network) {
             throw new Exception('Network name is required.');
         }
@@ -35,6 +34,7 @@ final readonly class Network
     public static function fromNetwork(User $user, string $network, string $identity): self
     {
         return new self(
+            id: Id::next(),
             user: $user,
             network: $network,
             identity: $identity

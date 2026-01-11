@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Model\User\Entity\User\Reset;
 
-use App\Model\User\Entity\User\ResetToken;
+use App\Model\Shared\Domain\ValueObject\Id;
 use App\Model\User\Entity\User\User;
 use App\Model\User\ValueObject\Email;
-use App\Model\User\ValueObject\Id;
+use App\Model\User\ValueObject\ResetToken;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase

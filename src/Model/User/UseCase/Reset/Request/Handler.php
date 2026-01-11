@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\Reset\Request;
 
-use App\Model\User\Contracts\FlasherInterface;
+use App\Model\Shared\Domain\Contracts\FlasherInterface;
 use App\Model\User\Contracts\ResetTokenSenderInterface;
-use App\Model\User\Contracts\TokenGeneratorInterface;
 use App\Model\User\Contracts\UserRepositoryInterface;
 use App\Model\User\Services\ResetTokenizer;
 use App\Model\User\ValueObject\Email;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 class Handler
 {

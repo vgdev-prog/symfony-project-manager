@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model\User\UseCase\SignUp\Request;
+namespace App\Model\User\UseCase\SignUp\Confirm;
 
-use App\Model\User\Contracts\FlasherInterface;
+use App\Model\Shared\Domain\Contracts\FlasherInterface;
 use App\Model\User\Contracts\UserRepositoryInterface;
 use DomainException;
 

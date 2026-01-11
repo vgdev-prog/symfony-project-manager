@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\User\ValueObject;
+namespace App\Model\Shared\Domain\ValueObject;
 
 use Ramsey\Uuid\Uuid;
 

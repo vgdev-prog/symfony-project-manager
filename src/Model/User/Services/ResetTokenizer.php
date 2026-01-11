@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\User\Services;
 
-use App\Model\User\Entity\User\ResetToken;
+use App\Model\User\ValueObject\ResetToken;
 use DateInterval;
 use Ramsey\Uuid\Uuid;
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\Network\Auth;
 
-use App\Model\User\Contracts\FlasherInterface;
+use App\Model\Shared\Domain\Contracts\FlasherInterface;
+use App\Model\Shared\Domain\ValueObject\Id;
 use App\Model\User\Contracts\UserRepositoryInterface;
 use App\Model\User\Entity\User\User;
-use App\Model\User\ValueObject\Id;
 use DateTimeImmutable;
 use DomainException;
 use Exception;
