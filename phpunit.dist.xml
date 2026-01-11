@@ -27,7 +27,7 @@
         </testsuite>
 
         <testsuite name="Integration">
-            <directory>src/*/Infrastructure/Tests/Intergration</directory>
+            <directory>src/*/Infrastructure/Tests/Integration</directory>
         </testsuite>
 
         <testsuite name="Functional">
