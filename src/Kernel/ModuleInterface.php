@@ -40,19 +40,6 @@ interface ModuleInterface
     public function getRouteFiles(): array;
 
     /**
-     * Configure services for this module.
-     *
-     * This is called when loading the dependency injection container.
-     * Default implementation loads files from getConfigFiles().
-     *
-     * Override only if you need programmatic configuration.
-     */
-    public function configureContainer(
-        ContainerConfigurator $container,
-        ContainerBuilder $builder
-    ): void;
-
-    /**
      * Configure routes for this module.
      *
      * This is called when loading the routing configuration.
