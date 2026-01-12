@@ -24,7 +24,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'user_users')]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(name: 'user_users',uniqueConstraints: [
+    new ORM\UniqueConstraint(name: 'email', columns: ['email']),
+])]
 final class User extends AggregateRoot implements UserInterface, PasswordAuthenticatedUserInterface
 
 {
@@ -42,13 +45,13 @@ final class User extends AggregateRoot implements UserInterface, PasswordAuthent
         #[ORM\Column(type: 'string', length: 255, nullable: true)]
         private ?string           $password,
 
-        #[ORM\Column(type: 'string', enumType: UserStatus::class)]
+        #[ORM\Column(name: 'user_status', type: 'string', enumType: UserStatus::class)]
         private UserStatus        $userStatus,
 
-        #[ORM\Column(type: 'string', length: 255, nullable: true)]
+        #[ORM\Column(name: 'user_role', type: 'string', length: 255, nullable: true)]
         private ?string           $confirmToken,
 
-        #[ORM\Embedded(class: ResetToken::class, columnPrefix: 'reset_token')]
+        #[ORM\Embedded(class: ResetToken::class, columnPrefix: 'reset_token_')]
         private ?ResetToken       $resetToken,
 
         #[ORM\OneToMany(targetEntity: Network::class, mappedBy: 'user', cascade: ['persist'], orphanRemoval: true)]
@@ -237,6 +240,15 @@ final class User extends AggregateRoot implements UserInterface, PasswordAuthent
     public function isWait(): bool
     {
         return $this->userStatus === UserStatus::WAIT;
+    }
+
+    #[ORM\PostLoad()]
+    public function checkEmbeds()
+    {
+        if (!$this->resetToken->getToken()) {
+            $this->resetToken = null;
+        }
+
     }
 
 
