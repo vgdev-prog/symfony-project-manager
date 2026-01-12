@@ -17,4 +17,6 @@ interface UserRepositoryInterface
 
     public function getByEmail(Email $email):?User;
 
+    public function hasByMail(Email $email): bool;
+
 }

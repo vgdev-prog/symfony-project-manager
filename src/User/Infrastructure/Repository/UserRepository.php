@@ -91,4 +91,16 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
     {
         return $this->findOneBy(['email' => $email]);
     }
+
+    public function hasByMail(Email $email): bool
+    {
+        $count = $this->createQueryBuilder('user')
+            ->select('COUNT(user.id)')
+            ->where('user.email = :email')
+            ->setParameter('email', $email->getValue())
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $count > 0;
+    }
 }

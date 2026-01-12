@@ -6,9 +6,12 @@ namespace App\Shared\Infrastructure\EventListeners;
 
 use App\Shared\Domain\Exception\AbstractDomainException;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
+#[AsEventListener(event: KernelEvents::EXCEPTION, method: 'onKernelException')]
 final readonly class DomainExceptionListener
 {
     public function __construct(

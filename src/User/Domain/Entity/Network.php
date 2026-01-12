@@ -28,11 +28,16 @@ final class Network
      */
     private function __construct(
         #[ORM\Id]
-        #[ORM\Column(type: 'guid', unique: true)]
+        #[ORM\Column(type: 'uuid', unique: true)]
         private Id     $id,
 
         #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'networks')]
-        #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
+        #[ORM\JoinColumn(
+            name: 'user_id',
+            referencedColumnName: 'id',
+            nullable: false,
+            onDelete: 'CASCADE'
+        )]
         private User   $user,
 
         #[ORM\Column(type: 'string', length: 255)]

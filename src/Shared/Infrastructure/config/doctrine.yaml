@@ -2,4 +2,4 @@ doctrine:
     dbal:
         types:
             email: App\Shared\Infrastructure\Persistence\Type\EmailType
-            id: App\Shared\Infrastructure\Persistence\Type\IdType
+            uuid: App\Shared\Infrastructure\Persistence\Type\IdType

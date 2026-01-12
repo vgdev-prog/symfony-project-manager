@@ -14,6 +14,7 @@ use App\User\Domain\Contract\PasswordHasherInterface;
 use App\User\Domain\Contract\UserMailerInterface;
 use App\User\Domain\Contract\UserRepositoryInterface;
 use App\User\Domain\Entity\User;
+use App\User\Domain\Exceptions\UserAlreadyExist;
 use DateTimeImmutable;
 use DomainException;
 
@@ -30,12 +31,12 @@ readonly class SignUpByEmailHandler
     {
     }
 
-    public function handle(SignUpByEmailCommand $command): void
+    public function handle(SignUpByEmailCommand $command): Id
     {
         $mail = Email::fromString($command->email);
 
-        if ($this->userRepository->findOneBy(['email' => $mail])) {
-            throw new DomainException('Email already exists');
+        if ($this->userRepository->hasByMail($mail)) {
+            throw new UserAlreadyExist($command->email);
         }
 
         $token = $this->tokenGenerator->generate();
@@ -53,6 +54,8 @@ readonly class SignUpByEmailHandler
         $this->flusher->flush();
 
         $this->domainEventDispatcher->dispatch($user);
+
+        return $user->getId();
     }
 
 }

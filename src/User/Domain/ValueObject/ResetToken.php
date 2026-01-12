@@ -13,10 +13,10 @@ use DomainException;
 final class ResetToken
 {
     public function __construct(
-        #[ORM\Column(type: 'string', length: 255)]
+        #[ORM\Column(type: 'string', length: 255, nullable: true)]
         private readonly string            $token,
 
-        #[ORM\Column(type: 'date_immutable', length: 255)]
+        #[ORM\Column(type: 'date_immutable', length: 255, nullable: true)]
         private readonly DateTimeImmutable $expiresAt,
     )
     {

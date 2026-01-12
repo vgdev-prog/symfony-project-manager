@@ -39,7 +39,7 @@ final class User extends AggregateRoot implements UserInterface, PasswordAuthent
         #[ORM\Column(type: 'date_immutable', length: 255)]
         private DateTimeImmutable $date,
 
-        #[ORM\Column(type: 'string', length: 255, nullable: true)]
+        #[ORM\Column(type: 'email', length: 255, nullable: true)]
         private ?Email            $email,
 
         #[ORM\Column(type: 'string', length: 255, nullable: true)]
